@@ -171,28 +171,6 @@
     .slot-0 { top: 50%; left: 20px; transform: translateY(-50%); }
     .slot-1 { top: 50%; right: 20px; transform: translateY(-50%); }
 
-    /* PLUS ICON STYLING */
-    .plus-btn {
-      width: 55px;
-      height: 55px;
-      border-radius: 50%;
-      background: rgba(244, 114, 182, 0.15);
-      border: 2px dashed #f472b6;
-      color: #f472b6;
-      font-size: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .plus-btn:hover {
-      transform: scale(1.15);
-      background: rgba(244, 114, 182, 0.35);
-      box-shadow: 0 0 20px rgba(244, 114, 182, 0.6);
-    }
-
     .photo-slot img {
       width: 100%;
       height: 100%;
@@ -204,10 +182,6 @@
 
     .photo-slot img:hover {
       transform: scale(1.08);
-    }
-
-    input[type="file"] {
-      display: none;
     }
 
     /* FULLSCREEN IMAGE PREVIEW LIGHTBOX */
@@ -260,11 +234,6 @@
       }
       .slot-0 { left: -5px; }
       .slot-1 { right: -5px; }
-      .plus-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 1.3rem;
-      }
     }
   </style>
 </head>
@@ -291,20 +260,20 @@
         "Friendship is not about who you've known the longest... It's about who came into your life, said 'I'm here for you,' and proved it." ✨
       </div>
 
-      <!-- 2 PHOTOS CIRCLE WRAPPER AROUND WISH -->
+      <!-- 2 PRE-LOADED PHOTOS AROUND WISH -->
       <div class="circle-wrapper">
         <div class="center-wish">
           Happy Friendship Day, Swiggy! 💖
         </div>
 
+        <!-- Left Image -->
         <div class="photo-slot slot-0" id="slot-0">
-          <div class="plus-btn" onclick="triggerUpload(0)">+</div>
-          <input type="file" id="input-0" accept="image/*" onchange="uploadSinglePhoto(event, 0)" />
+          <img src="https://i.ibb.co/BVRkkmrY/image.jpg" alt="Swiggy Photo 1" onclick="openLightbox(this.src)" />
         </div>
 
+        <!-- Right Image -->
         <div class="photo-slot slot-1" id="slot-1">
-          <div class="plus-btn" onclick="triggerUpload(1)">+</div>
-          <input type="file" id="input-1" accept="image/*" onchange="uploadSinglePhoto(event, 1)" />
+          <img src="https://i.ibb.co/8Lc62ndf/image.jpg" alt="Swiggy Photo 2" onclick="openLightbox(this.src)" />
         </div>
       </div>
     </div>
@@ -420,48 +389,9 @@
         origin: { y: 0.5 },
         colors: ['#f472b6', '#ec4899', '#ffffff']
       });
-
-      renderLockedPhotos();
     }
 
-    /* 4. PERMANENT IMAGE UPLOADER, LOCK & LIGHTBOX PREVIEW SYSTEM */
-    function triggerUpload(index) {
-      let lockedPhotos = JSON.parse(localStorage.getItem('swiggy_circle_photos') || '{}');
-      if (lockedPhotos[index]) return;
-      document.getElementById(`input-${index}`).click();
-    }
-
-    function uploadSinglePhoto(event, index) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        let lockedPhotos = JSON.parse(localStorage.getItem('swiggy_circle_photos') || '{}');
-        
-        lockedPhotos[index] = {
-          imgSrc: e.target.result
-        };
-
-        localStorage.setItem('swiggy_circle_photos', JSON.stringify(lockedPhotos));
-        renderLockedPhotos();
-      };
-
-      reader.readAsDataURL(file);
-    }
-
-    function renderLockedPhotos() {
-      let lockedPhotos = JSON.parse(localStorage.getItem('swiggy_circle_photos') || '{}');
-
-      for (let i = 0; i < 2; i++) {
-        const slotEl = document.getElementById(`slot-${i}`);
-        if (lockedPhotos[i]) {
-          slotEl.innerHTML = `<img src="${lockedPhotos[i].imgSrc}" alt="Memory with Swiggy" onclick="openLightbox('${lockedPhotos[i].imgSrc}')" />`;
-          slotEl.style.cursor = "default";
-        }
-      }
-    }
-
+    /* 4. LIGHTBOX PREVIEW SYSTEM */
     function openLightbox(src) {
       document.getElementById('lightboxImg').src = src;
       document.getElementById('lightbox').style.display = 'flex';
